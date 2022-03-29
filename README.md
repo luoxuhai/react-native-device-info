@@ -172,7 +172,8 @@ The example app in this repository shows an example usage of every single API, c
 | [getUsedMemory()](#getusedmemory)                                 | `Promise<number>`   |  ✅  |   ✅    |   ✅    | ✅  |
 | [getUserAgent()](#getuseragent)                                   | `Promise<string>`   |  ✅  |   ✅    |   ❌    | ✅  |
 | [getVersion()](#getversion)                                       | `string`            |  ✅  |   ✅    |   ✅    | ❌  |
-| [getBrightness()](#getBrightness)                                 | `Promise<number>`   |  ✅  |   ❌    |   ❌    | ❌  |
+| [getBrightness()](#getbrightness)                                 | `Promise<number>`   |  ✅  |   ❌    |   ❌    | ❌  |
+| [getSystemVolume()](#getsystemvolume)                             | `Promise<number>`   |  ✅  |   ❌    |   ❌    | ❌  |
 | [hasGms()](#hasGms)                                               | `Promise<boolean>`  |  ❌  |   ✅    |   ❌    | ❌  |
 | [hasHms()](#hasHms)                                               | `Promise<boolean>`  |  ❌  |   ✅    |   ❌    | ❌  |
 | [hasNotch()](#hasNotch)                                           | `boolean`           |  ✅  |   ✅    |   ✅    | ❌  |
@@ -1423,6 +1424,18 @@ DeviceInfo.getBrightness().then((brightness) => {
 });
 ```
 
+### getSystemVolume()
+
+Gets the current volume level of the system. Currently iOS only. Returns a number between 0.0 and 1.0, inclusive.
+
+#### Examples
+
+```js
+DeviceInfo.getSystemVolume().then((volume) => {
+  // iOS: 0.65
+});
+```
+
 ## Hooks & Events
 
 Currently iOS & Android only (web support for battery/charging-related APIs).
@@ -1602,6 +1615,34 @@ import { useIsHeadphonesConnected } from 'react-native-device-info';
 const { loading, result } = useIsHeadphonesConnected(); // { loading: true, result: false}
 
 <Text>{loading ? 'loading...' : result}</Text>;
+```
+
+---
+
+### useSystemVolume
+
+Gets the current volume level of the system. Currently iOS only. Returns a number between 0.0 and 1.0, inclusive.
+
+This hook subscribes to the event, RNDeviceInfo_brightnessDidChange , and updates the volume field accordingly.
+
+#### Example
+
+```jsx
+import { useSystemVolume } from 'react-native-device-info';
+
+const volume = useSystemVolume(); // 0.65
+
+<Text>{volume}</Text>;
+```
+
+```js
+import { NativeEventEmitter, NativeModules } from 'react-native';
+
+const deviceInfoEmitter = new NativeEventEmitter(NativeModules.RNDeviceInfo);
+
+deviceInfoEmitter.addListener('RNDeviceInfo_systemVolumeDidChange', (volume) => {
+  // 0.65
+});
 ```
 
 =======

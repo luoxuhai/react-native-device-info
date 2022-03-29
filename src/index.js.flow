@@ -120,6 +120,8 @@ declare module.exports: {
   getVersion: () => string,
   getBrightness: () => Promise<number>,
   getBrightnessSync: () => number,
+  getSystemVolume: () => Promise<number>,
+  getSystemVolumeSync: () => number,
   hasNotch: () => boolean,
   hasSystemFeature: (feature: string) => Promise<boolean>,
   hasSystemFeature: (feature: string) => Promise<boolean>,

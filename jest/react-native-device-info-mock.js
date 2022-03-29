@@ -134,6 +134,8 @@ const diMock = {
   getVersion: stringFnSync(),
   getBrightness: numberFnAsync(),
   getBrightnessSync: numberFnSync(),
+  getSystemVolume: numberFnAsync(),
+  getSystemVolumeSync: numberFnSync(),
   hasNotch: booleanFnSync(),
   isLandscape: booleanFnAsync(),
   isLandscapeSync: booleanFnSync(),
@@ -158,6 +160,7 @@ const diMock = {
   useHasSystemFeature: booleanAsyncHookResultHook(),
   useIsEmulator: booleanAsyncHookResultHook(),
   useManufacturer: stringAsyncHookResultHook(),
+  useSystemVolume: numberFnSync(),
 };
 
 module.exports = diMock;

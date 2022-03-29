@@ -31,6 +31,7 @@ import {
   useHasSystemFeature,
   useIsEmulator,
   useIsHeadphonesConnected,
+  useSystemVolume,
 } from 'react-native-device-info';
 
 const FunctionalComponent = () => {
@@ -43,6 +44,7 @@ const FunctionalComponent = () => {
   const hasSystemFeature = useHasSystemFeature('amazon.hardware.fire_tv');
   const isEmulator = useIsEmulator();
   const isHeadphonesConnected = useIsHeadphonesConnected();
+  const systemVolume = useSystemVolume();
   const deviceJSON = {
     batteryLevel,
     batteryLevelIsLow,
@@ -53,6 +55,7 @@ const FunctionalComponent = () => {
     hasSystemFeature,
     isEmulator,
     isHeadphonesConnected,
+    systemVolume,
   };
 
   return (
@@ -179,6 +182,7 @@ export default class App extends Component {
     deviceJSON.codename = DeviceInfo.getCodenameSync();
     deviceJSON.incremental = DeviceInfo.getIncrementalSync();
     deviceJSON.brightness = DeviceInfo.getBrightnessSync();
+    deviceJSON.systemVolume = DeviceInfo.getSystemVolumeSync();
     deviceJSON.supported32BitAbis = DeviceInfo.supported32BitAbisSync();
     deviceJSON.supported64BitAbis = DeviceInfo.supported64BitAbisSync();
     deviceJSON.hasGms = DeviceInfo.hasGmsSync();
@@ -249,6 +253,7 @@ export default class App extends Component {
       deviceJSON.codename = await DeviceInfo.getCodename();
       deviceJSON.incremental = await DeviceInfo.getIncremental();
       deviceJSON.brightness = await DeviceInfo.getBrightness();
+      deviceJSON.systemVolume = await DeviceInfo.getSystemVolume();
       deviceJSON.supported32BitAbis = await DeviceInfo.supported32BitAbis();
       deviceJSON.supported64BitAbis = await DeviceInfo.supported64BitAbis();
       deviceJSON.hasGms = await DeviceInfo.hasGms();

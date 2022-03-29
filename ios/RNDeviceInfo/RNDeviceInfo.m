@@ -51,7 +51,7 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents
 {
-    return @[@"RNDeviceInfo_batteryLevelDidChange", @"RNDeviceInfo_batteryLevelIsLow", @"RNDeviceInfo_powerStateDidChange", @"RNDeviceInfo_headphoneConnectionDidChange"];
+    return @[@"RNDeviceInfo_batteryLevelDidChange", @"RNDeviceInfo_batteryLevelIsLow", @"RNDeviceInfo_powerStateDidChange", @"RNDeviceInfo_headphoneConnectionDidChange", @"RNDeviceInfo_brightnessDidChange", @"RNDeviceInfo_systemVolumeDidChange"];
 }
 
 - (NSDictionary *)constantsToExport {
@@ -94,6 +94,12 @@ RCT_EXPORT_MODULE();
                                                  selector:@selector(headphoneConnectionDidChange:)
                                                      name:AVAudioSessionRouteChangeNotification
                                                    object: [AVAudioSession sharedInstance]];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(brightnessDidChange:)
+                                                     name:UIScreenBrightnessDidChangeNotification
+                                                   object: nil];
+        
+        [[AVAudioSession sharedInstance] addObserver:self forKeyPath:@"outputVolume" options:NSKeyValueObservingOptionNew context:(void *)[AVAudioSession sharedInstance]];
 #endif
     }
 
@@ -106,6 +112,15 @@ RCT_EXPORT_MODULE();
 
 - (void)stopObserving {
     hasListeners = NO;
+}
+
+#pragma Key-value observing
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqual:@"outputVolume"]) {
+        CGFloat newVolume = [[change objectForKey:@"new"] floatValue];
+        [self systemVolumeDidChange: newVolume];
+    }
 }
 
 - (DeviceType) getDeviceType
@@ -636,6 +651,21 @@ RCT_EXPORT_METHOD(isPinOrFingerprintSet:(RCTPromiseResolveBlock)resolve rejecter
     [self sendEventWithName:@"RNDeviceInfo_headphoneConnectionDidChange" body:[NSNumber numberWithBool:isConnected]];
 }
 
+- (void) brightnessDidChange:(NSNotification *)notification {
+    if (!hasListeners) {
+        return;
+    }
+    
+    [self sendEventWithName:@"RNDeviceInfo_brightnessDidChange" body:self.getBrightness];
+}
+
+- (void) systemVolumeDidChange:(CGFloat)volume {
+    if (!hasListeners) {
+        return;
+    }
+    [self sendEventWithName:@"RNDeviceInfo_systemVolumeDidChange" body:@(volume)];
+}
+
 - (NSDictionary *) powerState {
 #if RCT_DEV && (!TARGET_IPHONE_SIMULATOR) && !TARGET_OS_TV
     if ([UIDevice currentDevice].isBatteryMonitoringEnabled != true) {
@@ -833,6 +863,20 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getBrightnessSync) {
 
 RCT_EXPORT_METHOD(getBrightness:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     resolve(self.getBrightness);
+}
+
+- (NSNumber *) getSystemVolume {
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    CGFloat volume = audioSession.outputVolume;
+    return @(volume);
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getSystemVolumeSync) {
+    return self.getSystemVolume;
+}
+
+RCT_EXPORT_METHOD(getSystemVolume:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    resolve(self.getSystemVolume);
 }
 
 #pragma mark - dealloc -

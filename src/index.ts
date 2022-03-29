@@ -689,6 +689,13 @@ export const [getBrightness, getBrightnessSync] = getSupportedPlatformInfoFuncti
   defaultValue: -1,
 });
 
+export const [getSystemVolume, getSystemVolumeSync] = getSupportedPlatformInfoFunctions({
+  supportedPlatforms: ['ios'],
+  getter: () => RNDeviceInfo.getSystemVolume(),
+  syncGetter: () => RNDeviceInfo.getSystemVolumeSync(),
+  defaultValue: -1,
+});
+
 export async function getDeviceToken() {
   if (Platform.OS === 'ios') {
     return RNDeviceInfo.getDeviceToken();
@@ -797,6 +804,32 @@ export function useManufacturer(): AsyncHookResult<string> {
   return useOnMount(getManufacturer, 'unknown');
 }
 
+export function useSystemVolume(): number | null {
+  const [systemVolume, setSystemVolume] = useState<number | null>(null);
+
+  useEffect(() => {
+    const setInitialValue = async () => {
+      const initialValue: number = await getSystemVolume();
+      setSystemVolume(initialValue);
+    };
+
+    const onChange = (level: number) => {
+      setSystemVolume(level);
+    };
+
+    setInitialValue();
+
+    const subscription = deviceInfoEmitter.addListener(
+      'RNDeviceInfo_systemVolumeDidChange',
+      onChange
+    );
+
+    return () => subscription.remove();
+  }, []);
+
+  return systemVolume;
+}
+
 export type { AsyncHookResult, DeviceType, LocationProviderInfo, PowerState };
 
 const deviceInfoModule: DeviceInfoModule = {
@@ -899,6 +932,8 @@ const deviceInfoModule: DeviceInfoModule = {
   getVersion,
   getBrightness,
   getBrightnessSync,
+  getSystemVolume,
+  getSystemVolumeSync,
   hasGms,
   hasGmsSync,
   hasHms,
@@ -944,6 +979,7 @@ const deviceInfoModule: DeviceInfoModule = {
   usePowerState,
   useManufacturer,
   useIsHeadphonesConnected,
+  useSystemVolume,
 };
 
 export default deviceInfoModule;

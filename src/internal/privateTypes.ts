@@ -120,6 +120,8 @@ interface ExposedNativeMethods {
   getUserAgentSync: () => string;
   getBrightness: () => Promise<number>;
   getBrightnessSync: () => number;
+  getSystemVolume: () => Promise<number>;
+  getSystemVolumeSync: () => number;
   hasGms: () => Promise<boolean>;
   hasGmsSync: () => boolean;
   hasHms: () => Promise<boolean>;
@@ -191,6 +193,7 @@ export interface DeviceInfoModule extends ExposedNativeMethods {
   usePowerState: () => Partial<PowerState>;
   useManufacturer: () => AsyncHookResult<string>;
   useIsHeadphonesConnected: () => AsyncHookResult<boolean>;
+  useSystemVolume: () => number | null;
 }
 
 export type Getter<T> = () => T;

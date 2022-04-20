@@ -846,6 +846,22 @@ RCT_EXPORT_METHOD(getBrightness:(RCTPromiseResolveBlock)resolve rejecter:(RCTPro
     resolve(self.getBrightness);
 }
 
+- (BOOL) isMultitaskingSupported {
+    if (@available(iOS 4.0, tvOS 9.0, macCatalyst 13.1, *)) {
+        return @([UIDevice currentDevice].isMultitaskingSupported);
+    } else {
+        return @(NO);
+    }
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(isMultitaskingSupportedSync) {
+    return self.isMultitaskingSupported;
+}
+
+RCT_EXPORT_METHOD(isMultitaskingSupported:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    resolve(self.isMultitaskingSupported);
+}
+
 #pragma mark - dealloc -
 
 - (void)dealloc

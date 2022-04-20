@@ -373,6 +373,13 @@ export const isTablet = () =>
     getter: () => RNDeviceInfo.isTablet,
   });
 
+export const [isMultitaskingSupported, isMultitaskingSupportedSync] = getSupportedPlatformInfoFunctions({
+  supportedPlatforms: ['ios'],
+  getter: () => RNDeviceInfo.isMultitaskingSupported(),
+  syncGetter: () => RNDeviceInfo.isMultitaskingSupportedSync(),
+  defaultValue: false,
+});
+
 export const [isPinOrFingerprintSet, isPinOrFingerprintSetSync] = getSupportedPlatformInfoFunctions(
   {
     supportedPlatforms: ['android', 'ios', 'windows'],
@@ -954,6 +961,8 @@ const deviceInfoModule: DeviceInfoModule = {
   isKeyboardConnectedSync,
   isTabletMode,
   isTablet,
+  isMultitaskingSupported,
+  isMultitaskingSupportedSync,
   supported32BitAbis,
   supported32BitAbisSync,
   supported64BitAbis,

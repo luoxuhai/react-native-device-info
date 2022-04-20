@@ -49,6 +49,7 @@ If you want to use Install Referrer tracking, you will need to add this config t
 ```
 
 If you are experiencing issues with hasGms() on your release apks, please add the following rule to your Proguard config
+
 ```
 -keep class com.google.android.gms.common.** {*;}
 ```
@@ -188,6 +189,7 @@ The example app in this repository shows an example usage of every single API, c
 | [isPinOrFingerprintSet()](#ispinorfingerprintset)                 | `Promise<boolean>`  |  ✅  |   ✅    |   ✅    | ❌  |
 | [isTablet()](#istablet)                                           | `boolean`           |  ✅  |   ✅    |   ✅    | ❌  |
 | [isTabletMode()](#istabletmode)                                   | `Promise<bool>`     |  ❌  |   ❌    |   ✅    | ❌  |
+| [isMultitaskingSupported()](#ismultitaskingsupported)             | `Promise<boolean>`  |  ✅  |   ❌    |   ❌    | ❌  |
 | [supported32BitAbis()](#supported32BitAbis)                       | `Promise<string[]>` |  ❌  |   ✅    |   ❌    | ❌  |
 | [supported64BitAbis()](#supported64BitAbis)                       | `Promise<string[]>` |  ❌  |   ✅    |   ❌    | ❌  |
 | [supportedAbis()](#supportedAbis)                                 | `Promise<string[]>` |  ✅  |   ✅    |   ✅    | ❌  |
@@ -856,8 +858,11 @@ DeviceInfo.getSerialNumber().then((serialNumber) => {
   // Windows: ? (a serial number, if your app has the "capability smbios")
 });
 ```
+
 ## Notes
+
 ### capability smbios
+
 If you want to use this method in windows, you have to add smbios capability in your aplication. Please following this [documentation](https://docs.microsoft.com/en-us/windows/win32/sysinfo/access-smbios-information-from-a-universal-windows-app) for add the capability in your manifest file.
 
 ---
@@ -1196,6 +1201,20 @@ Tells if the device is in tablet mode.
 ```js
 let isTabletMode = DeviceInfo.isTabletMode();
 // true
+```
+
+---
+
+### isMultitaskingSupported()
+
+A Boolean value that indicates whether the current device supports multitasking. Currently iOS only.
+
+#### Examples
+
+```js
+DeviceInfo.isMultitaskingSupported().then((isMultitaskingSupported) => {
+  // iOS: true
+});
 ```
 
 ---
